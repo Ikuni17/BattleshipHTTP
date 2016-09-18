@@ -18,15 +18,6 @@ def main():
 	make_opponent()
 	print()
 
-	if useCoord((2, 7)) == False:
-		check_for_hit((2,7))
-	if useCoord((1, 3)) == False:
-		check_for_hit((1,3))
-	if useCoord((4, 9)) == False:
-		check_for_hit((4,9))
-	if useCoord((5, 5)) == False:
-		check_for_hit((5,5))
-
 def make_board():
 	global board
 
@@ -190,10 +181,12 @@ def write_opponent():
 def update_eboard(coord, result):
 	global eboard
 
-	if result == 0:
+	if result == "0":
 		eboard[coord[1]][coord[0]] = "0"
-	else:
+	elif result == "1":
 		eboard[coord[1]][coord[0]] = "1"
+	else:
+		print("That isn't a hit or a miss.")
 
 	write_opponent()
 

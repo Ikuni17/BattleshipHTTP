@@ -85,7 +85,6 @@ def place_ship(shipType):
 					for k in range(0,length):
 						board[curY+k][curX] = title
 					placed = 1
-					print("Placed " + shipType)
 				else:
 					curX = random.randint(0,9)
 					curY = random.randint(0,9)
@@ -182,7 +181,7 @@ def print_opponent():
 
 	for i in range(0,len(eboard)):
 		for j in range(0,len(eboard[i])):
-			print(board[i][j], end="")
+			print(eboard[i][j], end="")
 		print()
 
 def write_opponent():

@@ -1,7 +1,7 @@
 import argparse
 import urllib.parse
 import http.client
-import time
+import Board
 
 # Parse command line arguments for server IP, port and fire coordinates
 def parseArgs():
@@ -45,8 +45,11 @@ def openConnection(arguments):
     r2 = connection.getresponse()
     print(r2.status, r2.reason)
     connection.close()
-    return r2.reason
-    # msg2 = msg.split('&')
+    if r2.status is 200:
+        coord = (arguments[2][0], arguments[2][1])
+        msg2 = r2.reason.split('=')
+        Board.make_opponent()
+        Board.update_eboard(coord, msg2[1])
     # print(msg2)
     # connection.request('GET', '/')
     # r1 = connection.getresponse()
@@ -70,7 +73,7 @@ def forwardMessage(arguments, msg):
 
 def main():
     arguments = parseArgs()
-    msg = openConnection(arguments)
-    forwardMessage(arguments, msg)
+    openConnection(arguments)
+    #forwardMessage(arguments, msg)
 
 main()

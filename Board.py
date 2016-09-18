@@ -226,5 +226,3 @@ def check_for_sink(coord, title):
 	else:
 		#print("No sink!")
 		return (1)
-
-main()

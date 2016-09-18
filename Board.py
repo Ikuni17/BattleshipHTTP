@@ -138,14 +138,11 @@ def check_for_hit(coord):
 	global board
 	global counters
 
-	print("Checking " + str(coord) + ".")
 	if board[coord[1]][coord[0]] == "_":
-		print("Miss at point " + str(coord) + "!")
 		board[coord[1]][coord[0]] = "0"
 		write_board()
 		return (0)
 	else:
-		print("Hit at point " + str(coord) + "!")
 		title = board[coord[1]][coord[0]]
 		if title is "C":
 			#print(title)
@@ -198,10 +195,8 @@ def update_eboard(coord, result):
 	global eboard
 
 	if result == 0:
-		print("You missed the enemy at point " + str(coord) + "!")
 		eboard[coord[1]][coord[0]] = "0"
 	else:
-		print("You hit the enemy at point " + str(coord) + "!")
 		eboard[coord[1]][coord[0]] = "1"
 
 	write_opponent()

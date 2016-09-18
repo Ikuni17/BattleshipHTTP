@@ -120,7 +120,7 @@ def print_board():
 def write_board():
 	global board
 
-	boardFile = open('Boards/own_board.txt', 'w')
+	boardFile = open('own_board.txt', 'w')
 	for i in range(0,len(board)):
 		for j in range(0,len(board[i])):
 			boardFile.write(board[i][j])
@@ -188,7 +188,7 @@ def print_opponent():
 def write_opponent():
 	global eboard
 
-	eboardFile = open("Boards/opponent_board.txt", "w")
+	eboardFile = open("opponent_board.txt", "w")
 	for i in range(0,len(eboard)):
 		for j in range(0,len(eboard[i])):
 			eboardFile.write(eboard[i][j])

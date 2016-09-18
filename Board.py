@@ -141,7 +141,7 @@ def check_for_hit(coord):
 	if board[coord[1]][coord[0]] == "_":
 		board[coord[1]][coord[0]] = "0"
 		write_board()
-		return (0)
+		return (("0"))
 	else:
 		title = board[coord[1]][coord[0]]
 		if title is "C":
@@ -225,4 +225,4 @@ def check_for_sink(coord, title):
 		return(1,"D")
 	else:
 		#print("No sink!")
-		return (1)
+		return (('1'))

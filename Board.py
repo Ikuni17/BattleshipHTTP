@@ -27,10 +27,6 @@ def main():
 	if useCoord((5, 5)) == False:
 		check_for_hit((5,5))
 
-	update_eboard((0,0),0)
-	update_eboard((2,5),1)
-	update_eboard((2,4),1)
-
 def make_board():
 	global board
 

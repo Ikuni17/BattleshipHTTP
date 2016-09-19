@@ -1,11 +1,24 @@
+# Jason Sanders & Bradley White
+# CSCI 466: Networks
+# Battleship HTTP: Board
+# September 19, 2016
+#
+# This python module handles creation, updating of both boards, and external files
+# related to each board. The ships are placed randomly on the board each time the server
+# is started.
+
 import random
 
 # Global Variables
+# own_board
 board = dict([(0, []), (1, []), (2, []), (3, []), (4, []), (5, []), (6, []), (7, []), (8, []), (9, [])])
+# opponent_board
 eboard = dict([(0, []), (1, []), (2, []), (3, []), (4, []), (5, []), (6, []), (7, []), (8, []), (9, [])])
+# hit counters for each ship to check if sunk
 counters = [0, 0, 0, 0, 0]
 
 
+# Invoked by the server to create new boards
 def main():
     global board
     global eboard
@@ -19,31 +32,38 @@ def main():
     print()
 
 
+# Create own_board
 def make_board():
     global board
 
+    # Start by making every location "water"
     for i in range(0, len(board)):
         for j in range(0, 10):
             board[i].append("_")
 
+    # Call helper functions to place each ship
     place_ship("Carrier")
     place_ship("Battleship")
     place_ship("Cruiser")
     place_ship("Submarine")
     place_ship("Destroyer")
 
+    # Call helper functions to print the board to the terminal and write the txt and HTML files
     print_board()
     write_board()
 
 
+# Places a ship on the board randomly
 def place_ship(shipType):
     global board
 
+    # Get random starting coordinates and a random orientation
     curX = random.randint(0, 9)
     curY = random.randint(0, 9)
     orient = random.randint(0, 1)
     placed = 0
 
+    # Parameters for each type of ship
     if shipType == "Carrier":
         length = 5
         title = "C"
@@ -62,18 +82,24 @@ def place_ship(shipType):
     else:
         print("Tried to place invalid ship type.")
 
+    # Loop until the ship is placed
     while placed == 0:
         intersects = 0
 
+        # Ship is being placed vertically
         if orient == 1:
+            # Make sure the ship will fit on the board
             if curY + length <= 9:
+                # Make sure the ship won't cross over another ship
                 for i in range(0, length):
                     if board[curY + i][curX] != "_":
                         intersects += 1
+                # If we are past the checks, place the ship
                 if intersects == 0:
                     for k in range(0, length):
                         board[curY + k][curX] = title
                     placed = 1
+                # Otherwise the checks failed, get new starting coordinates and start over
                 else:
                     curX = random.randint(0, 9)
                     curY = random.randint(0, 9)
@@ -81,6 +107,7 @@ def place_ship(shipType):
                 curX = random.randint(0, 9)
                 curY = random.randint(0, 9)
 
+        # Ship is being placed horizontally using the same logic as above
         if orient == 0:
             if curX + length <= 9:
                 for i in range(0, length):
@@ -98,6 +125,7 @@ def place_ship(shipType):
                 curY = random.randint(0, 9)
 
 
+# Print own_board to the terminal
 def print_board():
     global board
 
@@ -107,6 +135,7 @@ def print_board():
         print()
 
 
+# Write own_board to txt and html files
 def write_board():
     global board
 
@@ -119,11 +148,12 @@ def write_board():
 
     boardPage = open('own_board.html', 'w')
     for i in range(0, len(board)):
-        boardPage.write(board[i])
+        boardPage.write(str(board[i]))
         boardPage.write('</br>')
     boardPage.close()
 
 
+# Check if a coordinate has been used from a previous fire message, used for 410 error by the server
 def useCoord(coord):
     global board
 
@@ -133,6 +163,7 @@ def useCoord(coord):
         return False
 
 
+# Create opponent_board, all locations are "water" initially
 def make_opponent():
     global eboard
 
@@ -140,10 +171,12 @@ def make_opponent():
         for j in range(0, 10):
             eboard[i].append("_")
 
+    # Call helper functions
     # print_opponent()
     write_opponent()
 
 
+# Print opponent_board to terminal
 def print_opponent():
     global eboard
 
@@ -153,6 +186,7 @@ def print_opponent():
         print()
 
 
+# Write opponent_board to txt and html files
 def write_opponent():
     global eboard
 
@@ -163,7 +197,15 @@ def write_opponent():
         eboardFile.write('\n')
     eboardFile.close()
 
+    htmlFile = open("opponent_board.html", "w")
+    for i in range(0, len(eboard)):
+        htmlFile.write(str(eboard[i]))
+        htmlFile.write('</br>')
+    htmlFile.close()
 
+
+# Updates the opponent_board txt and html files which are then used by each call of the client
+# because clients are not persistent
 def update_eboard(coord, result):
     # Open the file for reading
     filename = 'opponent_board.txt'
@@ -178,7 +220,7 @@ def update_eboard(coord, result):
                 eboard[j].append(charList[i])
         j += 1
     file.close()
-    # Update the required character within the dictionary
+    # Update the required character from the fire message within the dictionary
     if result is "0":
         eboard[coord[1]][coord[0]] = "0"
     elif result is "1":
@@ -192,24 +234,28 @@ def update_eboard(coord, result):
         eboardFile.write('\n')
     eboardFile.close()
 
-    # Write the data with proper formatting to an html file
+    # Write the data with proper formatting to the html file
     htmlFile = open("opponent_board.html", "w")
-    for i in range(0,len(eboard)):
+    for i in range(0, len(eboard)):
         htmlFile.write(str(eboard[i]))
         htmlFile.write('</br>')
     htmlFile.close()
 
 
-
+# Check if a ship was hit from a fire message
 def check_for_hit(coord):
     global board
     global counters
 
+    # If the coordinate was water, update it to a 0 and return miss
     if board[coord[1]][coord[0]] == "_":
         board[coord[1]][coord[0]] = "0"
         write_board()
         return (("0"))
+    # Otherwise there was a ship hit
     else:
+        # Parse the character in the coordinate and figure out the ship hit, update the counter for how many
+        # Hits the ship has received
         title = board[coord[1]][coord[0]]
         if title is "C":
             # print(title)
@@ -228,16 +274,22 @@ def check_for_hit(coord):
             counters[4] += 1
         else:
             print("You hit a ghost ship...")
+        # Call helper function to check if the ship is sunk, and return the result.
+        # Also updates the coordinate to a 1 for hit.
         return check_for_sink(coord, title)
 
 
+# Check if a ship has been sunk and update a coordinate to hit
 def check_for_sink(coord, title):
     global board
     global counters
 
+    # Update the coordinate to hit
     board[coord[1]][coord[0]] = "1"
+    # Call helper function to update the board
     write_board()
 
+    # Check if a ship's counter is equal to it's length if so return a sink
     if counters[0] == 5:
         # print("There's a sunken Carrier!")
         return (1, "C")
@@ -253,6 +305,7 @@ def check_for_sink(coord, title):
     elif counters[4] == 2:
         # print("There's a sunken Destroyer!")
         return (1, "D")
+    # Otherwise return a hit only
     else:
         # print("No sink!")
         return (('1'))

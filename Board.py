@@ -117,6 +117,12 @@ def write_board():
         boardFile.write('\n')
     boardFile.close()
 
+    boardPage = open('own_board.html', 'w')
+    for i in range(0, len(board)):
+        boardPage.write(board[i])
+        boardPage.write('</br>')
+    boardPage.close()
+
 
 def useCoord(coord):
     global board
@@ -185,6 +191,14 @@ def update_eboard(coord, result):
             eboardFile.write(eboard[i][j])
         eboardFile.write('\n')
     eboardFile.close()
+
+    # Write the data with proper formatting to an html file
+    htmlFile = open("opponent_board.html", "w")
+    for i in range(0,len(eboard)):
+        htmlFile.write(str(eboard[i]))
+        htmlFile.write('</br>')
+    htmlFile.close()
+
 
 
 def check_for_hit(coord):

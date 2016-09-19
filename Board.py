@@ -14,12 +14,8 @@ def main():
     make_board()
     print()
 
-    print("main", eboard)
-    print()
     print("Making Enemy Board...")
     make_opponent()
-    print()
-    print("main after", eboard)
     print()
 
 
@@ -169,14 +165,8 @@ def make_opponent():
         for j in range(0, 10):
             eboard[i].append("_")
 
-    print("make opp after loop", eboard)
-    print()
     print_opponent()
-    print("make opp after print", eboard)
-    print()
     write_opponent()
-    print("make opp after write", eboard)
-    print()
 
 
 def print_opponent():
@@ -208,20 +198,22 @@ def update_eboard(coord, result):
 
     for i in range(0,len(eboard[coord[0]])):
         dummyList.append(eboard[i])
-
-    print(coord[0])
-    print(coord[1])
     print(eboard)
+    
     if result == "0":
         dummyList[coord[1]] = "0"
     elif result == "1":
         dummyList[coord[1]] = "1"
-
     eboard[coord[0]] = ""
     for i in range(0, len(dummyList)):
         eboard[coord[0]] += dummyList[i]
 
-    write_opponent()
+    eboardFile = open('opponent_board.txt', 'w')
+    for j in range(0, len(eboard)):
+    	for k in range(0, len(eboard[j])):
+    		eboardFile.write(eboard[i][j])
+    	eboardFile.write('\n')
+    eboardFile.close()
 
 
 def check_for_sink(coord, title):
@@ -232,20 +224,14 @@ def check_for_sink(coord, title):
     write_board()
 
     if counters[0] == 5:
-        # print("There's a sunken Carrier!")
         return (1, "C")
     elif counters[1] == 4:
-        # print("There's a sunken Battleship!")
         return (1, "B")
     elif counters[2] == 3:
-        # print("There's a sunken Cruiser!")
         return (1, "R")
     elif counters[3] == 3:
-        # print("There's a sunken Submarine!")
         return (1, "S")
     elif counters[4] == 2:
-        # print("There's a sunken Destroyer!")
         return (1, "D")
     else:
-        # print("No sink!")
         return (('1'))

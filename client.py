@@ -3,6 +3,7 @@ import urllib.parse
 import http.client
 import Board
 
+
 # Parse command line arguments for server IP, port and fire coordinates
 def parseArgs():
     # Start a new argument parser
@@ -35,9 +36,9 @@ def openConnection(arguments):
     print('Connecting to IP: {} on port: {}'.format(*server_address))
     # sock.connect(server_address)
 
-    #url = 'http://' + arguments[0] + ':' + str(arguments[1])
-    #parsed = urllib.parse.urlsplit(url)
-    #url = urllib.parse.urlunsplit(parsed)
+    # url = 'http://' + arguments[0] + ':' + str(arguments[1])
+    # parsed = urllib.parse.urlsplit(url)
+    # url = urllib.parse.urlunsplit(parsed)
 
     params = urllib.parse.urlencode({'x': arguments[2][0], 'y': arguments[2][1]})
     headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
@@ -48,32 +49,35 @@ def openConnection(arguments):
     if r2.status is 200:
         coord = (arguments[2][0], arguments[2][1])
         msg2 = r2.reason.split('=')
-        Board.make_opponent()
+        #Board.make_opponent()
         Board.update_eboard(coord, msg2[1])
-    # print(msg2)
-    # connection.request('GET', '/')
-    # r1 = connection.getresponse()
-    # print(r1.status, r1.reason)
+        # print(msg2)
+        # connection.request('GET', '/')
+        # r1 = connection.getresponse()
+        # print(r1.status, r1.reason)
 
-    # sock.close()
+        # sock.close()
+
 
 def forwardMessage(arguments, msg):
     coord = (arguments[2][0], arguments[2][1])
     homeServer = ('127.0.0.1', arguments[1])
-    #homeServer = (arguments[0], arguments[1])
+    # homeServer = (arguments[0], arguments[1])
     homeConnection = http.client.HTTPConnection('localhost', arguments[1])
     print('Connecting to IP: {} on port: {}'.format(*homeServer))
 
-    params = urllib.parse.urlencode({'x': coord[0], 'y': coord[1], 'hit':msg})
+    params = urllib.parse.urlencode({'x': coord[0], 'y': coord[1], 'hit': msg})
     headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
     homeConnection.request("POST", "", params, headers)
     r3 = homeConnection.getresponse()
     print(r3.status, r3.reason)
     homeConnection.close()
 
+
 def main():
     arguments = parseArgs()
     openConnection(arguments)
-    #forwardMessage(arguments, msg)
+    # forwardMessage(arguments, msg)
+
 
 main()

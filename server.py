@@ -5,6 +5,7 @@ import urllib.parse
 import logging
 import Board
 
+
 # Parse command line arguments for port number and board location
 def parseArgs():
     # Start a new argument parser
@@ -18,11 +19,12 @@ def parseArgs():
     # Save the arguments into new variables
     port = args.port
     boardLocation = args.file_name
-    #print(port)
-    #print(boardLocation)
+    # print(port)
+    # print(boardLocation)
     file = open(boardLocation, "r")
     file.close()
     return port
+
 
 class requestHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
@@ -101,7 +103,7 @@ class requestHandler(BaseHTTPRequestHandler):
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
                 return
-        if(Board.useCoord(coord)):
+        if (Board.useCoord(coord)):
             self.send_error(410)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
@@ -109,28 +111,29 @@ class requestHandler(BaseHTTPRequestHandler):
 
         message = Board.check_for_hit(coord)
         if len(message) is 1:
-            answer = ('hit='+str(message[0]))
+            answer = ('hit=' + str(message[0]))
         if len(message) is 2:
-            answer = ('hit='+str(message[0])+'&'+'sunk='+str(message[1]))
+            answer = ('hit=' + str(message[0]) + '&' + 'sunk=' + str(message[1]))
         self.send_response(200, answer)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
         return
+
 
 def openServer(port):
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to the port from arguments
-    #info = socket.getaddrinfo()
+    # info = socket.getaddrinfo()
     serverAddress = (socket.gethostbyname(socket.gethostname()), port)
     print('Starting server on IP: {} and port: {}'.format(*serverAddress))
-    #sock.bind(serverAddress)
+    # sock.bind(serverAddress)
     server = HTTPServer(serverAddress, requestHandler)
-    #requestHandler.protocol_version = "HTTP/1.1"
+    # requestHandler.protocol_version = "HTTP/1.1"
 
     # Listen for incoming connections
-    #sock.listen(1)
+    # sock.listen(1)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -138,9 +141,11 @@ def openServer(port):
     server.server_close()
     print('Server closed')
 
+
 def main():
     Board.main()
     port = parseArgs()
     openServer(port)
+
 
 main()

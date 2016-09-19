@@ -14,12 +14,8 @@ def main():
     make_board()
     print()
 
-    print("main", eboard)
-    print()
     print("Making Enemy Board...")
     make_opponent()
-    print()
-    print("main after", eboard)
     print()
 
 
@@ -131,6 +127,62 @@ def useCoord(coord):
         return False
 
 
+def make_opponent():
+    global eboard
+
+    for i in range(0, len(eboard)):
+        for j in range(0, 10):
+            eboard[i].append("_")
+
+    # print_opponent()
+    write_opponent()
+
+
+def print_opponent():
+    global eboard
+
+    for i in range(0, len(eboard)):
+        for j in range(0, len(eboard[i])):
+            print(eboard[i][j], end="")
+        print()
+
+
+def write_opponent():
+    global eboard
+
+    eboardFile = open('opponent_board.txt', "w")
+    for i in range(0, len(eboard)):
+        for j in range(0, len(eboard[i])):
+            eboardFile.write(eboard[i][j])
+        eboardFile.write('\n')
+    eboardFile.close()
+
+
+def update_eboard(coord, result):
+    filename = 'opponent_board.txt'
+    file = open(filename, "r")
+    eboard = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: []}
+    j = 0
+    for line in file:
+        charList = list(line)
+        for i in range(0, len(charList)):
+            if charList[i] is not "\n":
+                eboard[j].append(charList[i])
+        j += 1
+    file.close()
+    if result is "0":
+        eboard[coord[1]][coord[0]] = "0"
+    elif result is "1":
+        eboard[coord[1]][coord[0]] = "1"
+
+    eboardFile = open(filename, "w")
+    for i in range(0, len(eboard)):
+        for j in range(0, len(eboard[i])):
+            eboardFile.write(eboard[i][j])
+        eboardFile.write('\n')
+    eboardFile.close()
+
+
 def check_for_hit(coord):
     global board
     global counters
@@ -159,69 +211,6 @@ def check_for_hit(coord):
         else:
             print("You hit a ghost ship...")
         return check_for_sink(coord, title)
-
-
-def make_opponent():
-    global eboard
-    print("make opp before loop", eboard)
-    print()
-    for i in range(0, len(eboard)):
-        for j in range(0, 10):
-            eboard[i].append("_")
-
-    print("make opp after loop", eboard)
-    print()
-    print_opponent()
-    print("make opp after print", eboard)
-    print()
-    write_opponent()
-    print("make opp after write", eboard)
-    print()
-
-
-def print_opponent():
-    global eboard
-
-    for i in range(0, len(eboard)):
-        for j in range(0, len(eboard[i])):
-            print(eboard[i][j], end="")
-        print()
-
-
-def write_opponent():
-    global eboard
-
-    eboardFile = open('opponent_board.txt', "w")
-    for i in range(0, len(eboard)):
-        for j in range(0, len(eboard[i])):
-            eboardFile.write(eboard[i][j])
-        eboardFile.write('\n')
-    eboardFile.close()
-
-
-def update_eboard(coord, result):
-    #global eboard
-    data = open("opponent_board.txt", "r")
-    eboardFile = data.read()
-    eboard = eboardFile.split("\n")
-    dummyList = []
-
-    for i in range(0,len(eboard[coord[0]])):
-        dummyList.append(eboard[i])
-
-    print(coord[0])
-    print(coord[1])
-    print(eboard)
-    if result == "0":
-        dummyList[coord[1]] = "0"
-    elif result == "1":
-        dummyList[coord[1]] = "1"
-
-    eboard[coord[0]] = ""
-    for i in range(0, len(dummyList)):
-        eboard[coord[0]] += dummyList[i]
-
-    write_opponent()
 
 
 def check_for_sink(coord, title):

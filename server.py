@@ -5,9 +5,11 @@ import urllib.parse
 import logging
 import Board
 
+boardLocation = ""
 
 # Parse command line arguments for port number and board location
 def parseArgs():
+    global boardLocation
     # Start a new argument parser
     parser = argparse.ArgumentParser()
 
@@ -19,16 +21,16 @@ def parseArgs():
     # Save the arguments into new variables
     port = args.port
     boardLocation = args.file_name
-    # print(port)
-    # print(boardLocation)
     file = open(boardLocation, "r")
     file.close()
     return port
 
 
 class requestHandler(BaseHTTPRequestHandler):
+    global boardLocation
+
     def do_HEAD(self):
-        logging.debug('HEADER %s' % (self.path))
+        #logging.debug('HEADER %s' % (self.path))
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
@@ -80,6 +82,19 @@ class requestHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             self.info()
+            return
+        elif self.path == '/own_board.html':
+            self.send_response(200)  # OK
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            #file = urllib.urlopen('http://192.168.1.10:5000/own_board.txt').read()
+            '''file = open('own_board.txt','rb')
+            #self.wfile.write(bytes(file.read(),'utf-8'))
+            for line in file:
+                self.wfile.write(line)
+                self.wfile.write(bytes('\n','utf-8'))
+            file.close()'''
+            return
         else:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -87,6 +102,18 @@ class requestHandler(BaseHTTPRequestHandler):
             self.wfile.write(bytes("Hello World!", 'utf-8'))
             return
 
+        '''elif self.path == '/own_board.html':
+                    self.send_response(200)
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+                    self.wfile.write('<html>'.encode('utf-8'))
+                    self.wfile.write('  <head>'.encode('utf-8'))
+                    self.wfile.write('    <title>Server Info</title>'.encode('utf-8'))
+                    self.wfile.write('  </head>'.encode('utf-8'))
+                    self.wfile.write('  <body>'.encode('utf-8'))
+                    self.wfile.write('      <a href=file://///localhost/own_board.txt>own_board.text</a>'.encode('utf-8'))
+                    self.wfile.write('  </body>'.encode('utf-8'))
+                    self.wfile.write('</html>'.encode('utf-8'))'''
     def do_POST(self):
         length = int(self.headers['Content-Length'])
         post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
@@ -124,16 +151,11 @@ def openServer(port):
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # Bind the socket to the port from arguments
-    # info = socket.getaddrinfo()
     serverAddress = (socket.gethostbyname(socket.gethostname()), port)
     print('Starting server on IP: {} and port: {}'.format(*serverAddress))
-    # sock.bind(serverAddress)
     server = HTTPServer(serverAddress, requestHandler)
-    # requestHandler.protocol_version = "HTTP/1.1"
+    #requestHandler.protocol_version = "HTTP/1.1"
 
-    # Listen for incoming connections
-    # sock.listen(1)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

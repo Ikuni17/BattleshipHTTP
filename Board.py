@@ -159,8 +159,10 @@ def write_opponent():
 
 
 def update_eboard(coord, result):
+    # Open the file for reading
     filename = 'opponent_board.txt'
     file = open(filename, "r")
+    # Create a new dictionary and fill it with the characters in the file, line by line
     eboard = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: []}
     j = 0
     for line in file:
@@ -170,11 +172,13 @@ def update_eboard(coord, result):
                 eboard[j].append(charList[i])
         j += 1
     file.close()
+    # Update the required character within the dictionary
     if result is "0":
         eboard[coord[1]][coord[0]] = "0"
     elif result is "1":
         eboard[coord[1]][coord[0]] = "1"
 
+    # Open the file again and write the updated dictionary to it
     eboardFile = open(filename, "w")
     for i in range(0, len(eboard)):
         for j in range(0, len(eboard[i])):

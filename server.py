@@ -109,7 +109,7 @@ class requestHandler(BaseHTTPRequestHandler):
 
         message = Board.check_for_hit(coord)
         if len(message) is 1:
-            answer = ('hit='+message[0])
+            answer = ('hit='+str(message[0]))
         if len(message) is 2:
             answer = ('hit='+str(message[0])+'&'+'sunk='+str(message[1]))
         self.send_response(200, answer)

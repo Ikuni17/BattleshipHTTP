@@ -1,0 +1,7 @@
+The message format used was the one developed in class. Once a client makes a legitimate fire message, the Board module
+checks for a hit/miss and potentially a sink and will return a tuple to the server in one of three formats:
+('1') or ('0') or ('1', 'S') where S represents the character for a sunken ship. The server will then format the tuple
+into the correct format: (hit=1/0&sunk=S) and send a message to the client within a 200 response.
+
+The post requests by the client are handled by two libraries: urllib.parse and HTTP.client and the server side uses three:
+socket, urllib.parse, and HTTP.server.

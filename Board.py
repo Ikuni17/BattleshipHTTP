@@ -6,7 +6,7 @@
 # This python module handles creation, updating of both boards, and external files
 # related to each board. The ships are placed randomly on the board each time the server
 # is started.
-#Something
+#Somethings
 
 import random
 
